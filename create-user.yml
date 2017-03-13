@@ -1,21 +1,26 @@
 ---
-# Create a new user, e.g., a new person joins the lab.
+# Create a new account on the server, e.g., a new person joins the lab
 #
 # To create a new user, you need a username and a password.
 # You can provide these on the command line when you run
 # the playbook.
 #
-# $ ansible-playbook create-user.yml -e "username=newguy password=newguypassword"
+#   $ ansible-playbook create-user.yml -e "username=newguy password=newguypassword"
 #
 # After creating the user, they should login and change their
-# password to something only they know.
+# password to something only they know with the `passwd` command.
+#
+#   $ passwd
 
 - name: Create a user
   hosts: sapir
   become: yes
+  vars:
+    user_groups: ""
   tasks:
     - user:
         name: "{{ username }}"
         password: "{{ password | password_hash('sha512') }}"
+        groups: "{{ user_groups }}"
         shell: /bin/bash
         state: present
